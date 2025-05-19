@@ -1,99 +1,101 @@
 import { useState } from "react";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Grid from "@mui/material/Grid";
+import { unitOptions } from "../db/unitData";
+import { allowOnlyNumbers } from "../utils/allowOnlyNumbers";
+import { convert } from "../utils/conversionFunctions";
+import { Box } from "@mui/material";
 
-const unitOptions = {
-  길이: [
-    "킬로미터",
-    "미터",
-    "센티미터",
-    "밀리미터",
-    "마이크로미터",
-    "나노미터",
-    "마일",
-    "야드",
-    "피트",
-    "인치",
-    "해리",
-  ],
-  데이터전송속도: ["bps", "Kbps", "Mbps", "Gbps"],
-  데이터크기: ["비트", "바이트", "KB", "MB", "GB", "TB"],
-  면적: ["제곱미터", "헥타르", "평", "에이커"],
-  부피: ["리터", "밀리리터", "입방미터", "갤런", "온스"],
-  속도: ["km/h", "m/s", "mph", "노트"],
-  시간: ["초", "분", "시간", "일", "주", "년"],
-  압력: ["Pa", "kPa", "bar", "atm", "psi"],
-  에너지: ["줄", "킬로줄", "칼로리", "킬로칼로리", "와트시"],
-  연비: ["km/L", "L/100km", "mpg"],
-  온도: ["섭씨", "화씨", "켈빈"],
-  주파수: ["Hz", "kHz", "MHz", "GHz"],
-  질량: ["그램", "킬로그램", "톤", "파운드", "온스"],
-  평면각: ["도", "라디안", "그라디안"],
-};
+import CategorySelector from "./CategorySelector";
+import ValueInputRow from "./ValueInputRow";
+import UnitSelectorRow from "./UnitSelectorRow";
 
 const unitCategories = Object.keys(unitOptions);
 
 export default function ConverterForm() {
   const [unitCategory, setUnitCategory] = useState("길이");
-  // const [fromUnit, setFromUnit] = useState(unitOptions.unitCategory[0]);
-  // const [toUnit, setToUnit] = useState(unitOptions.unitCategory[1]);
+  const [unitFrom, setUnitFrom] = useState("킬로미터");
+  const [unitTo, setUnitTo] = useState("미터");
+  const [fromValue, setFromValue] = useState(1);
+  const [toValue, setToValue] = useState(1000);
 
-  const handleChange = (event) => {
-    setUnitCategory(event.target.value);
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    const from = Object.keys(unitOptions[category])[0];
+    const to = Object.keys(unitOptions[category])[1];
+    const initValue = ["길이", "면적"].includes(category) ? 1 : 0;
+    setUnitCategory(category);
+    setUnitFrom(from);
+    setUnitTo(to);
+    setFromValue(initValue);
+    setToValue(convert(category, initValue, from, to));
+  };
+
+  const handleFromChange = (e) => {
+    const val = e.target.value;
+    if (val === unitTo) {
+      setUnitFrom(val);
+      setUnitTo(unitFrom);
+      setToValue(convert(unitCategory, fromValue, val, unitFrom));
+    } else {
+      setUnitFrom(val);
+      setToValue(convert(unitCategory, fromValue, val, unitTo));
+    }
+  };
+
+  const handleToChange = (e) => {
+    const val = e.target.value;
+    if (val == unitFrom) {
+      setUnitFrom(unitTo);
+      setUnitTo(val);
+      setToValue(convert(unitCategory, fromValue, unitTo, val));
+    } else {
+      setUnitTo(val);
+      setToValue(convert(unitCategory, fromValue, unitFrom, val));
+    }
+  };
+
+  const handleSwap = () => {
+    setUnitFrom(unitTo);
+    setUnitTo(unitFrom);
+    setToValue(convert(unitCategory, fromValue, unitTo, unitFrom));
+  };
+
+  const handleFromValueChange = (e) => {
+    const val = e.target.value;
+    setFromValue(val);
+    setToValue(convert(unitCategory, val, unitFrom, unitTo));
+  };
+
+  const handleToValueChange = (e) => {
+    const val = e.target.value;
+    setFromValue(convert(unitCategory, val, unitTo, unitFrom));
+    setToValue(val);
   };
 
   return (
-    <>
-      <Box sx={{ minWidth: 120, bgcolor: "#007FFF" }}>
-        <Grid container spacing={2}>
-          <Grid>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={unitCategory}
-                label="Age"
-                onChange={handleChange}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-              <FormHelperText>With label + helper text</FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid>아이콘</Grid>
-          <Grid>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={unitCategory}
-                label="Age"
-                onChange={handleChange}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-              <FormHelperText>With label + helper text</FormHelperText>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Box>
-    </>
+    <Box sx={{ bgcolor: "#CCC", width: "100%", p: 3, borderRadius: "14px" }}>
+      <CategorySelector
+        unitCategory={unitCategory}
+        unitCategories={unitCategories}
+        handleChange={handleCategoryChange}
+      />
+      <ValueInputRow
+        fromValue={fromValue}
+        toValue={toValue}
+        unitFrom={unitFrom}
+        unitTo={unitTo}
+        unitLabelMap={unitOptions[unitCategory]}
+        onFromChange={handleFromValueChange}
+        onToChange={handleToValueChange}
+        onKeyDown={allowOnlyNumbers}
+      />
+      <UnitSelectorRow
+        unitOptions={unitOptions[unitCategory]}
+        unitFrom={unitFrom}
+        unitTo={unitTo}
+        handleFromChange={handleFromChange}
+        handleToChange={handleToChange}
+        handleSwap={handleSwap}
+      />
+    </Box>
   );
 }
