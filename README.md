@@ -10,11 +10,11 @@
 
 ## 구현한 단위
 
-- [ 길이 ]: 킬로미터, 미터, 센티미터, 밀리미터, 마이크로미터, 나노미터, 마일, 야드, 피트, 인치, 해리리
+- [ 길이 ]: 킬로미터, 미터, 센티미터, 밀리미터, 마이크로미터, 나노미터, 마일, 야드, 피트, 인치, 해리
 - [ 온도 ]: 섭씨, 화씨, 켈빈
 
 ## Deploying
 
-- [ Vercel ]: https://unit-converter-sepia-nine.vercel.app/
-- [ Netlify ]: https://barleymilk-unit-converter.netlify.app/
-- [ AWS amplify ]: https://main.d8bniunuu4m4x.amplifyapp.com/
+- https://unit-converter-sepia-nine.vercel.app/
+- https://barleymilk-unit-converter.netlify.app/
+- https://main.d8bniunuu4m4x.amplifyapp.com/
