@@ -15,6 +15,11 @@
 
 ## Deploying
 
-- https://unit-converter-sepia-nine.vercel.app/
-- https://barleymilk-unit-converter.netlify.app/
-- https://main.d8bniunuu4m4x.amplifyapp.com/
+- Vercel
+  - https://unit-converter-sepia-nine.vercel.app/
+- Netlify
+  - https://barleymilk-unit-converter.netlify.app/
+- AWS Amplify
+  - https://main.d8bniunuu4m4x.amplifyapp.com/
+- AWS S3 + AWS CloudFront
+  - https://halitedrop.store/
